@@ -1,0 +1,421 @@
+/* ===================================================================
+   GLOBAL STYLES FOR SHADOW DOM SECURITY SHOWCASE
+   
+   PRESENTER: These styles demonstrate how global CSS affects different
+   encapsulation methods differently:
+   - Light DOM: Fully affected by these styles
+   - Shadow DOM: Protected from these styles
+   - IFrame: Completely isolated
+   =================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Color scheme for security demonstration */
+    --danger-color: #ff4757;
+    --warning-color: #ffa502;
+    --success-color: #2ed573;
+    --info-color: #5352ed;
+    --light-bg: #f8f9fa;
+    --dark-text: #2c3e50;
+    --border-color: #ddd;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+/* ===================================================================
+   HEADER SECTION
+   =================================================================== */
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* ===================================================================
+   COMPONENT DEMONSTRATION SECTION
+   =================================================================== */
+
+.demo-components {
+    padding: 2rem;
+    background: var(--light-bg);
+}
+
+.demo-components h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark-text);
+    font-size: 2rem;
+}
+
+.component-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.component-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.component-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.component-container h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.component-container .description {
+    color: #666;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+/* Security status indicators */
+.security-note {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.security-note.danger {
+    background: rgba(255, 71, 87, 0.1);
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.security-note.warning {
+    background: rgba(255, 165, 2, 0.1);
+    color: var(--warning-color);
+    border: 1px solid var(--warning-color);
+}
+
+.security-note.success {
+    background: rgba(46, 213, 115, 0.1);
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+/* ===================================================================
+   IFRAME STYLING
+   PRESENTER: Note how iframe gets its own styling context
+   =================================================================== */
+
+iframe {
+    width: 100%;
+    height: 120px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+}
+
+/* ===================================================================
+   ATTACK PLAYGROUND SECTION
+   PRESENTER: This section allows live security testing
+   =================================================================== */
+
+.attack-playground {
+    padding: 2rem;
+    background: #fff;
+    border-top: 3px solid var(--danger-color);
+}
+
+.attack-playground h2 {
+    color: var(--danger-color);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.attack-playground > p {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.attack-interface {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.attack-input label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+#attack-code {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    resize: vertical;
+    background: #f8f9fa;
+}
+
+#attack-code:focus {
+    outline: none;
+    border-color: var(--info-color);
+    box-shadow: 0 0 0 3px rgba(83, 82, 237, 0.1);
+}
+
+.attack-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.attack-button, .example-button, .clear-button {
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.attack-button {
+    background: var(--danger-color);
+    color: white;
+}
+
+.attack-button:hover {
+    background: #ff3838;
+    transform: translateY(-1px);
+}
+
+.example-button {
+    background: var(--info-color);
+    color: white;
+}
+
+.example-button:hover {
+    background: #4c4bdb;
+    transform: translateY(-1px);
+}
+
+.clear-button {
+    background: #6c757d;
+    color: white;
+}
+
+.clear-button:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* ===================================================================
+   ATTACK RESULTS SECTION
+   =================================================================== */
+
+.attack-results {
+    background: #f8f9fa;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.attack-results h3 {
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+}
+
+.results-content {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 1rem;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    min-height: 100px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+/* ===================================================================
+   ATTACK EXAMPLES SECTION
+   =================================================================== */
+
+.attack-examples {
+    padding: 2rem;
+    background: var(--light-bg);
+    border-top: 1px solid var(--border-color);
+}
+
+.attack-examples h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark-text);
+    font-size: 2rem;
+}
+
+.examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.example-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.example-card h4 {
+    margin-bottom: 1rem;
+    color: var(--dark-text);
+    font-size: 1.2rem;
+}
+
+.example-btn {
+    background: var(--info-color);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.example-btn:hover {
+    background: #4c4bdb;
+    transform: translateY(-1px);
+}
+
+.example-card details {
+    margin-top: 1rem;
+}
+
+.example-card summary {
+    cursor: pointer;
+    padding: 0.5rem;
+    background: var(--light-bg);
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.example-card pre {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.3;
+}
+
+/* ===================================================================
+   PRESENTER NOTES: Global styles that will be tested
+   
+   These styles specifically target the Light DOM component to 
+   demonstrate how global CSS can affect unprotected components
+   =================================================================== */
+
+/* This will affect Light DOM but NOT Shadow DOM */
+normal-input input {
+    /* PRESENTER: This style will successfully override Light DOM input */
+    transition: all 0.3s ease;
+}
+
+normal-input input:focus {
+    /* PRESENTER: Light DOM is vulnerable to global style injection */
+    box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.2);
+}
+
+/* This will NOT affect Shadow DOM - demonstrate the protection */
+secure-input input {
+    /* PRESENTER: This will have NO EFFECT on Shadow DOM component */
+    background: yellow !important;
+    border: 5px solid red !important;
+}
+
+/* ===================================================================
+   RESPONSIVE DESIGN
+   =================================================================== */
+
+@media (max-width: 768px) {
+    .component-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .attack-interface {
+        grid-template-columns: 1fr;
+    }
+    
+    .examples-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    body {
+        padding: 1rem;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    header p {
+        font-size: 1rem;
+    }
+}

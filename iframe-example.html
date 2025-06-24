@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFrame Security Example</title>
+    <style>
+        /* PRESENTER: These styles are COMPLETELY ISOLATED from the parent page
+           Unlike Shadow DOM, iframe provides a complete security boundary */
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, #26d0ce, #1a7ce8);
+            color: white;
+            min-height: calc(100vh - 2rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .iframe-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            padding: 1rem;
+            color: #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .iframe-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #1a7ce8;
+        }
+        
+        .iframe-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #26d0ce;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            box-sizing: border-box;
+            background: #f0fffe;
+        }
+        
+        .iframe-input:focus {
+            outline: none;
+            border-color: #1a7ce8;
+            box-shadow: 0 0 0 3px rgba(26, 124, 232, 0.2);
+            background: white;
+        }
+        
+        .iframe-button {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #1a7ce8, #26d0ce);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .iframe-button:hover {
+            background: linear-gradient(135deg, #1565c0, #20a8a6);
+            transform: translateY(-1px);
+        }
+        
+        .security-info {
+            font-size: 0.7rem;
+            color: #1a7ce8;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: 500;
+        }
+        
+        /* PRESENTER: Even if the parent page has conflicting styles,
+           this iframe is completely protected */
+    </style>
+</head>
+<body>
+    <!-- PRESENTER: This entire document is isolated from the parent page
+         It has its own window, document, and JavaScript context -->
+    
+    <div class="iframe-container">
+        <div class="iframe-header">
+            🏰 IFrame Input (Fully Isolated)
+        </div>
+        
+        <input 
+            type="text" 
+            class="iframe-input"
+            id="iframe-input"
+            placeholder="Complete security boundary..."
+        />
+        
+        <button class="iframe-button" onclick="handleIframeSubmit()">
+            🔐 Submit (IFrame)
+        </button>
+        
+        <div class="security-info">
+            🏰 Maximum Isolation via IFrame Sandbox
+        </div>
+    </div>
+
+    <script>
+        /* PRESENTER: This JavaScript runs in a completely separate context
+           from the parent page. Even malicious scripts in the parent cannot
+           access this code or the DOM elements here. */
+        
+        function handleIframeSubmit() {
+            const input = document.getElementById('iframe-input');
+            const value = input.value.trim();
+            
+            if (!value) {
+                alert('Please enter some text in the IFrame input!');
+                return;
+            }
+            
+            // PRESENTER: This console.log goes to the iframe's console context
+            // It's completely separate from the parent page's console
+            console.log('🏰 IFrame Input Submitted:', value);
+            
+            alert(
+                `IFrame Value: "${value}"\n\n` +
+                `🏰 This value is COMPLETELY ISOLATED!\n\n` +
+                `❌ Parent page cannot access:\n` +
+                `- This iframe's DOM\n` +
+                `- This iframe's JavaScript context\n` +
+                `- This iframe's cookies (if cross-origin)\n` +
+                `- This iframe's localStorage\n\n` +
+                `🔐 IFrame provides the strongest isolation!`
+            );
+            
+            input.value = '';
+            
+            // PRESENTER: We could postMessage to communicate with parent
+            // but only if we explicitly choose to do so
+            try {
+                window.parent.postMessage({
+                    type: 'iframe-submit',
+                    data: { submitted: true, timestamp: Date.now() }
+                }, '*');
+            } catch (error) {
+                console.log('🏰 PostMessage blocked or failed - this is expected behavior');
+            }
+        }
+        
+        // PRESENTER: Add some interactive behavior that's completely protected
+        document.getElementById('iframe-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                handleIframeSubmit();
+            }
+        });
+        
+        // PRESENTER: This event listener is completely isolated
+        document.getElementById('iframe-input').addEventListener('input', function(event) {
+            // This cannot be intercepted by the parent page
+            // console.log('🏰 Isolated input event:', event.target.value);
+        });
+        
+        // PRESENTER: Demonstrate complete isolation on load
+        console.log('🏰 IFrame JavaScript context loaded - completely isolated');
+        console.log('🏰 Parent cannot access this console or any variables here');
+        
+        // PRESENTER: Even global variables are isolated
+        window.iframeSecret = 'This cannot be accessed from parent page';
+        
+        /* PRESENTER: Security comparison for demonstration:
+        
+           IFRAME ISOLATION:
+           ✅ DOM completely isolated
+           ✅ JavaScript context isolated  
+           ✅ Styles completely isolated
+           ✅ Events completely isolated
+           ✅ Can have different origin (cross-domain)
+           ✅ Sandbox attributes provide additional restrictions
+           ✅ Complete security boundary
+           
+           LIMITATIONS:
+           ❌ Higher resource overhead
+           ❌ More complex communication (postMessage)
+           ❌ Layout constraints
+           ❌ Accessibility challenges
+           ❌ SEO implications
+           
+           WHEN TO USE IFRAMES:
+           - Embedding third-party content
+           - Maximum security isolation needed  
+           - Different security contexts required
+           - Legacy system integration
+           
+           WHEN TO USE SHADOW DOM:
+           - Component style encapsulation
+           - DOM structure protection
+           - Same-origin scenarios
+           - Better performance needed
+           - Easier parent-child communication */
+    </script>
+</body>
+</html>

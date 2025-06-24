@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow DOM Security Showcase - Quick Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .status { padding: 5px; margin: 5px 0; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔒 Shadow DOM Security Showcase - Quick Test</h1>
+    
+    <div class="test-section">
+        <h2>Component Test</h2>
+        <div id="test-results">
+            <div class="status">Testing components...</div>
+        </div>
+        
+        <h3>Light DOM Component:</h3>
+        <normal-input id="test-normal" label="Test Light DOM"></normal-input>
+        
+        <h3>Shadow DOM Component:</h3>
+        <secure-input id="test-secure" label="Test Shadow DOM"></secure-input>
+        
+        <h3>IFrame Component:</h3>
+        <iframe src="iframe-example.html" style="width: 100%; height: 150px; border: 1px solid #ccc;"></iframe>
+    </div>
+
+    <div class="test-section">
+        <h2>Quick Attack Test</h2>
+        <button onclick="runQuickTest()">🎯 Run Quick Attack Test</button>
+        <div id="attack-results" style="margin-top: 10px; font-family: monospace; background: #f8f9fa; padding: 10px; border: 1px solid #ddd;"></div>
+    </div>
+
+    <!-- Load components -->
+    <script type="module" src="dist/NormalInput.js"></script>
+    <script type="module" src="dist/SecureInput.js"></script>
+
+    <script>
+        // Wait for components to load
+        setTimeout(() => {
+            const results = document.getElementById('test-results');
+            
+            // Test if components are registered
+            const normalDefined = customElements.get('normal-input');
+            const secureDefined = customElements.get('secure-input');
+            
+            results.innerHTML = '';
+            
+            if (normalDefined) {
+                results.innerHTML += '<div class="status success">✅ Normal Input component loaded</div>';
+            } else {
+                results.innerHTML += '<div class="status error">❌ Normal Input component failed to load</div>';
+            }
+            
+            if (secureDefined) {
+                results.innerHTML += '<div class="status success">✅ Secure Input component loaded</div>';
+            } else {
+                results.innerHTML += '<div class="status error">❌ Secure Input component failed to load</div>';
+            }
+            
+            // Test DOM access
+            setTimeout(() => {
+                const lightInput = document.querySelector('normal-input input');
+                const shadowInput = document.querySelector('secure-input input');
+                
+                if (lightInput) {
+                    results.innerHTML += '<div class="status success">✅ Light DOM input is accessible</div>';
+                } else {
+                    results.innerHTML += '<div class="status error">❌ Light DOM input not accessible</div>';
+                }
+                
+                if (!shadowInput) {
+                    results.innerHTML += '<div class="status success">✅ Shadow DOM input is protected (as expected)</div>';
+                } else {
+                    results.innerHTML += '<div class="status error">❌ Shadow DOM input is unexpectedly accessible</div>';
+                }
+            }, 500);
+        }, 1000);
+
+        function runQuickTest() {
+            const resultsDiv = document.getElementById('attack-results');
+            resultsDiv.innerHTML = 'Running quick attack test...\n\n';
+
+            try {
+                // Test 1: Light DOM access
+                const lightInput = document.querySelector('normal-input input');
+                if (lightInput) {
+                    resultsDiv.innerHTML += '✅ Light DOM Attack: Successfully accessed input\n';
+                    lightInput.style.background = 'yellow';
+                    lightInput.placeholder = 'HACKED!';
+                } else {
+                    resultsDiv.innerHTML += '❌ Light DOM Attack: Failed to access input\n';
+                }
+
+                // Test 2: Shadow DOM access
+                const shadowInput = document.querySelector('secure-input input');
+                if (shadowInput) {
+                    resultsDiv.innerHTML += '❌ Shadow DOM Attack: Unexpectedly accessed input\n';
+                } else {
+                    resultsDiv.innerHTML += '✅ Shadow DOM Protection: Input access blocked\n';
+                }
+
+                // Test 3: Style injection
+                const maliciousStyle = document.createElement('style');
+                maliciousStyle.textContent = `
+                    normal-input input { border: 3px solid red !important; }
+                    secure-input input { border: 3px solid red !important; }
+                `;
+                document.head.appendChild(maliciousStyle);
+                resultsDiv.innerHTML += '✅ Style Injection: Malicious styles injected (check visual effects)\n';
+
+                resultsDiv.innerHTML += '\n🎯 Quick test completed! Check the components above for visual changes.\n';
+                resultsDiv.innerHTML += 'Light DOM should show changes, Shadow DOM should remain protected.\n';
+
+            } catch (error) {
+                resultsDiv.innerHTML += `❌ Test Error: ${error.message}\n`;
+            }
+        }
+    </script>
+</body>
+</html>

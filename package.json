@@ -1,0 +1,18 @@
+{
+  "name": "shadow-dom-security-showcase",
+  "version": "1.0.0",
+  "description": "Interactive demonstration of Shadow DOM security implications vs Light DOM and IFrames",
+  "main": "index.html",
+  "scripts": {
+    "dev": "live-server --port=3000 --open=/index.html",
+    "build": "tsc",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "typescript": "^5.0.0"
+  },
+  "keywords": ["shadow-dom", "web-components", "security", "frontend", "typescript"],
+  "author": "Frontend Security Demo",
+  "license": "MIT"
+}

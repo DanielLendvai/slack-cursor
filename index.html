@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Encapsulation & Security - Shadow DOM Showcase</title>
+    <link rel="stylesheet" href="styles/global.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔒 Frontend Encapsulation & Security Showcase</h1>
+            <p>Interactive demonstration of Light DOM vs Shadow DOM vs IFrame security implications</p>
+        </header>
+
+        <!-- PRESENTER: This section demonstrates three different encapsulation approaches -->
+        <section class="demo-components">
+            <h2>Three Encapsulation Approaches</h2>
+            
+            <div class="component-grid">
+                <!-- Light DOM Component - Fully Exposed -->
+                <div class="component-container">
+                    <h3>🔓 Light DOM Component</h3>
+                    <p class="description">Fully exposed DOM - easily hackable</p>
+                    <normal-input id="normal-input" label="Light DOM Input"></normal-input>
+                    <div class="security-note danger">
+                        ⚠️ Styles and DOM structure fully accessible from parent page
+                    </div>
+                </div>
+
+                <!-- Shadow DOM Component - Encapsulated -->
+                <div class="component-container">
+                    <h3>🛡️ Shadow DOM Component</h3>
+                    <p class="description">Encapsulated styles and DOM structure</p>
+                    <secure-input id="secure-input" label="Shadow DOM Input"></secure-input>
+                    <div class="security-note warning">
+                        🔒 Styles and internal DOM protected from external access
+                    </div>
+                </div>
+
+                <!-- IFrame Component - Maximum Isolation -->
+                <div class="component-container">
+                    <h3>🏰 IFrame Component</h3>
+                    <p class="description">Complete security boundary</p>
+                    <iframe 
+                        id="iframe-component" 
+                        src="iframe-example.html" 
+                        title="IFrame Example"
+                        sandbox="allow-scripts allow-same-origin">
+                    </iframe>
+                    <div class="security-note success">
+                        🔐 Complete isolation with security boundary
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRESENTER: This section allows live attack demonstrations -->
+        <section class="attack-playground">
+            <h2>🎯 Attack Playground</h2>
+            <p>Try running these attacks to see the security differences:</p>
+            
+            <div class="attack-interface">
+                <div class="attack-input">
+                    <label for="attack-code">JavaScript Attack Code:</label>
+                    <textarea 
+                        id="attack-code" 
+                        placeholder="Enter JavaScript code to test security boundaries..."
+                        rows="8">// Try these examples:
+// 1. Access Light DOM input value
+document.querySelector('#normal-input')?.shadowRoot?.querySelector('input')?.value || 'Direct access: ' + document.querySelector('normal-input input')?.value;
+
+// 2. Try to access Shadow DOM internals
+document.querySelector('#secure-input')?.shadowRoot?.querySelector('input')?.value || 'Shadow DOM blocked access';
+
+// 3. Override styles
+document.head.appendChild(Object.assign(document.createElement('style'), {textContent: 'normal-input input { background: red !important; }'}));</textarea>
+                </div>
+                
+                <div class="attack-controls">
+                    <button id="run-attack" class="attack-button">🚀 Run Attack</button>
+                    <button id="load-example" class="example-button">📝 Load Example Attacks</button>
+                    <button id="clear-results" class="clear-button">🧹 Clear Results</button>
+                </div>
+            </div>
+
+            <div id="attack-results" class="attack-results">
+                <h3>Attack Results</h3>
+                <div id="results-content" class="results-content">
+                    Results will appear here after running attacks...
+                </div>
+            </div>
+        </section>
+
+        <!-- PRESENTER: Pre-built attack examples for demonstration -->
+        <section class="attack-examples">
+            <h2>📋 Ready-to-Use Attack Examples</h2>
+            <div class="examples-grid">
+                <div class="example-card">
+                    <h4>🎯 Value Access Attack</h4>
+                    <button class="example-btn" data-attack="value-access">Try It</button>
+                    <details>
+                        <summary>View Code</summary>
+                        <pre><code>// Attempt to read input values from all components
+console.log('=== VALUE ACCESS ATTACK ===');
+const results = {
+  lightDOM: null,
+  shadowDOM: null,
+  iframe: 'Cannot access (cross-origin)'
+};
+
+// Light DOM - Direct access
+const lightInput = document.querySelector('normal-input input');
+results.lightDOM = lightInput ? lightInput.value : 'Input not found';
+
+// Shadow DOM - Blocked access
+const shadowHost = document.querySelector('secure-input');
+results.shadowDOM = shadowHost?.shadowRoot ? 'Access blocked by Shadow DOM' : 'No shadow root access';
+
+console.log('Results:', results);</code></pre>
+                    </details>
+                </div>
+
+                <div class="example-card">
+                    <h4>🎨 Style Override Attack</h4>
+                    <button class="example-btn" data-attack="style-override">Try It</button>
+                    <details>
+                        <summary>View Code</summary>
+                        <pre><code>// Attempt to override styles in all components
+console.log('=== STYLE OVERRIDE ATTACK ===');
+
+// Light DOM - Succeeds
+const lightStyle = document.createElement('style');
+lightStyle.textContent = `
+  normal-input input { 
+    background: red !important; 
+    border: 3px solid orange !important;
+  }
+`;
+document.head.appendChild(lightStyle);
+
+// Shadow DOM - Fails
+const shadowStyle = document.createElement('style');
+shadowStyle.textContent = `
+  secure-input input { 
+    background: red !important; 
+    border: 3px solid orange !important;
+  }
+`;
+document.head.appendChild(shadowStyle);
+
+console.log('Light DOM: Styles overridden');
+console.log('Shadow DOM: Styles protected');</code></pre>
+                    </details>
+                </div>
+
+                <div class="example-card">
+                    <h4>👂 Event Hijacking Attack</h4>
+                    <button class="example-btn" data-attack="event-hijack">Try It</button>
+                    <details>
+                        <summary>View Code</summary>
+                        <pre><code>// Attempt to hijack events from all components
+console.log('=== EVENT HIJACKING ATTACK ===');
+
+// Light DOM - Can attach listeners
+const lightInput = document.querySelector('normal-input input');
+if (lightInput) {
+  lightInput.addEventListener('input', (e) => {
+    console.log('🔓 Hijacked Light DOM input:', e.target.value);
+  });
+}
+
+// Shadow DOM - Events bubble but internal structure protected
+const shadowHost = document.querySelector('secure-input');
+shadowHost?.addEventListener('input', (e) => {
+  console.log('🛡️ Shadow DOM event bubbled (but internals protected)');
+});
+
+console.log('Event listeners attached');</code></pre>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load our compiled TypeScript components -->
+    <script type="module" src="dist/NormalInput.js"></script>
+    <script type="module" src="dist/SecureInput.js"></script>
+    <script type="module" src="dist/App.js"></script>
+</body>
+</html>
