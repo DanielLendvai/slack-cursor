@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulnerable Banking Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-align: center;
+        }
+        .bank-interface {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .account-info {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .transfer-button {
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
+        }
+        .transfer-button:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6);
+        }
+        .warning {
+            background: rgba(255,0,0,0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .clicked-message {
+            display: none;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="bank-interface">
+        <h1>🏦 SecureBank Online</h1>
+        
+        <div class="account-info">
+            <h3>Account Balance</h3>
+            <p style="font-size: 24px; font-weight: bold;">$10,000.00</p>
+        </div>
+        
+        <p>Quick Actions:</p>
+        
+        <button class="transfer-button" onclick="transferMoney()">
+            💰 Transfer $1,000
+        </button>
+        
+        <button class="transfer-button" onclick="payBill()">
+            📄 Pay Bills
+        </button>
+        
+        <button class="transfer-button" onclick="deleteAccount()">
+            ⚠️ Close Account
+        </button>
+        
+        <div class="warning">
+            ⚠️ This page is vulnerable to clickjacking!<br>
+            It lacks X-Frame-Options headers and can be embedded in malicious iframes.
+        </div>
+        
+        <div id="clicked-message" class="clicked-message">
+            🚨 BUTTON CLICKED! In a real attack, this action would be performed without the user knowing they clicked on this banking interface!
+        </div>
+    </div>
+
+    <script>
+        function transferMoney() {
+            showClickedMessage('Money transfer initiated! $1,000 sent to attacker account.');
+        }
+        
+        function payBill() {
+            showClickedMessage('Bill payment processed! Payment sent to malicious recipient.');
+        }
+        
+        function deleteAccount() {
+            showClickedMessage('Account deletion requested! All funds would be transferred out.');
+        }
+        
+        function showClickedMessage(message) {
+            const messageDiv = document.getElementById('clicked-message');
+            messageDiv.innerHTML = '🚨 CLICKJACKING ATTACK SUCCESSFUL!<br><br>' + message;
+            messageDiv.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Simulate some dynamic content
+        setInterval(() => {
+            const balance = document.querySelector('.account-info p');
+            const currentBalance = parseFloat(balance.textContent.replace('$', '').replace(',', ''));
+            const newBalance = currentBalance + (Math.random() * 10 - 5);
+            balance.textContent = '$' + newBalance.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }, 3000);
+    </script>
+</body>
+</html>

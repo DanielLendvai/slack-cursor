@@ -1,0 +1,38 @@
+{
+  "name": "security-vulnerability-demos",
+  "version": "1.0.0",
+  "description": "Educational demonstrations of common web security vulnerabilities including Prototype Pollution, Clickjacking, and DOM Clobbering",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "python3 -m http.server 8000",
+    "test": "echo \"Run the demos by starting the server and visiting http://localhost:3000\" && exit 0"
+  },
+  "keywords": [
+    "security",
+    "vulnerability",
+    "prototype-pollution",
+    "clickjacking",
+    "dom-clobbering",
+    "education",
+    "cybersecurity"
+  ],
+  "author": "Security Education Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/security-vulnerability-demos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/security-vulnerability-demos/issues"
+  },
+  "homepage": "https://github.com/your-org/security-vulnerability-demos#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

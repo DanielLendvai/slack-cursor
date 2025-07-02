@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Vulnerability Demonstrations</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Security Vulnerability Demonstrations</h1>
+            <p class="subtitle">Educational examples of Prototype Pollution, Clickjacking, and DOM Clobbering</p>
+        </header>
+
+        <nav class="vulnerability-nav">
+            <button onclick="showSection('prototype-pollution')" class="nav-btn active">Prototype Pollution</button>
+            <button onclick="showSection('clickjacking')" class="nav-btn">Clickjacking</button>
+            <button onclick="showSection('dom-clobbering')" class="nav-btn">DOM Clobbering</button>
+        </nav>
+
+        <main>
+            <!-- Prototype Pollution Section -->
+            <section id="prototype-pollution" class="vulnerability-section active">
+                <h2>Prototype Pollution</h2>
+                <div class="demo-container">
+                    <div class="demo-panel">
+                        <h3>Vulnerable Code</h3>
+                        <div class="code-block">
+                            <pre><code>function merge(target, source) {
+    for (let key in source) {
+        if (typeof source[key] === 'object' && source[key] !== null) {
+            if (!target[key]) target[key] = {};
+            merge(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}</code></pre>
+                        </div>
+                        <div class="demo-controls">
+                            <h4>Test Prototype Pollution</h4>
+                            <textarea id="pp-payload" placeholder='{"__proto__": {"polluted": "value"}}'></textarea>
+                            <button onclick="testPrototypePollution()">Execute Payload</button>
+                            <div id="pp-result" class="result"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-panel">
+                        <h3>Safe Code</h3>
+                        <div class="code-block">
+                            <pre><code>function safeMerge(target, source) {
+    for (let key in source) {
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+            continue; // Skip dangerous keys
+        }
+        if (typeof source[key] === 'object' && source[key] !== null) {
+            if (!target[key]) target[key] = {};
+            safeMerge(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    }
+    return target;
+}</code></pre>
+                        </div>
+                        <div class="demo-controls">
+                            <h4>Test Safe Merge</h4>
+                            <textarea id="safe-pp-payload" placeholder='{"__proto__": {"polluted": "value"}}'></textarea>
+                            <button onclick="testSafePrototypePollution()">Execute Safe Payload</button>
+                            <div id="safe-pp-result" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Clickjacking Section -->
+            <section id="clickjacking" class="vulnerability-section">
+                <h2>Clickjacking</h2>
+                <div class="demo-container">
+                    <div class="demo-panel">
+                        <h3>Vulnerable Page (No X-Frame-Options)</h3>
+                        <div class="clickjacking-demo">
+                            <div class="fake-ui">
+                                <h4>Fake Social Media Post</h4>
+                                <p>Click the "Like" button below!</p>
+                                <div class="button-container">
+                                    <button class="fake-button">Like This Post</button>
+                                    <iframe src="vulnerable-page.html" class="hidden-iframe"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-controls">
+                            <button onclick="demonstrateClickjacking()">Create Clickjacking Attack</button>
+                            <div id="clickjacking-result" class="result"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-panel">
+                        <h3>Protected Page (With X-Frame-Options)</h3>
+                        <div class="code-block">
+                            <pre><code>// Server-side protection
+app.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Content-Security-Policy', "frame-ancestors 'none'");
+    next();
+});</code></pre>
+                        </div>
+                        <div class="demo-controls">
+                            <button onclick="demonstrateProtectedFrame()">Try to Frame Protected Page</button>
+                            <div id="protected-frame-result" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DOM Clobbering Section -->
+            <section id="dom-clobbering" class="vulnerability-section">
+                <h2>DOM Clobbering</h2>
+                <div class="demo-container">
+                    <div class="demo-panel">
+                        <h3>Vulnerable Code</h3>
+                        <div class="code-block">
+                            <pre><code>// Vulnerable: Accesses global variables without validation
+function processConfig() {
+    if (config && config.apiUrl) {
+        fetch(config.apiUrl + '/data')
+            .then(response => response.json())
+            .then(data => displayData(data));
+    }
+}</code></pre>
+                        </div>
+                        <div class="demo-controls">
+                            <h4>DOM Clobbering Attack</h4>
+                            <textarea id="dom-clobber-html" placeholder='&lt;form id="config"&gt;&lt;input name="apiUrl" value="https://evil.com"&gt;&lt;/form&gt;'></textarea>
+                            <button onclick="testDOMClobbering()">Inject HTML</button>
+                            <button onclick="processConfig()">Process Config</button>
+                            <div id="dom-clobber-result" class="result"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-panel">
+                        <h3>Safe Code</h3>
+                        <div class="code-block">
+                            <pre><code>// Safe: Uses proper validation and namespacing
+const AppConfig = {
+    config: null,
+    setConfig(newConfig) {
+        this.config = newConfig;
+    },
+    processConfig() {
+        if (this.config && typeof this.config.apiUrl === 'string') {
+            fetch(this.config.apiUrl + '/data')
+                .then(response => response.json())
+                .then(data => displayData(data));
+        }
+    }
+};</code></pre>
+                        </div>
+                        <div class="demo-controls">
+                            <h4>Safe Configuration</h4>
+                            <textarea id="safe-config" placeholder='{"apiUrl": "https://api.example.com"}'></textarea>
+                            <button onclick="setSafeConfig()">Set Safe Config</button>
+                            <button onclick="AppConfig.processConfig()">Process Safe Config</button>
+                            <div id="safe-config-result" class="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
