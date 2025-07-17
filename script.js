@@ -156,44 +156,42 @@ function demonstrateClickjacking() {
 function demonstrateProtectedFrame() {
     const resultDiv = document.getElementById('protected-frame-result');
     
-    // Simulate attempting to load a protected page
+    // Create an iframe that attempts to load a protected page
     const protectedContent = document.createElement('iframe');
     protectedContent.style.width = '100%';
     protectedContent.style.height = '200px';
     protectedContent.style.border = '2px solid green';
     
-    // Create protected page content
-    const protectedHTML = `
-        <html>
-        <head>
-            <style>
-                body { font-family: Arial; padding: 20px; background: #f0f8ff; }
-                .warning { color: red; font-weight: bold; }
-            </style>
-        </head>
-        <body>
-            <h3>Protected Banking Page</h3>
-            <p class="warning">This page cannot be framed due to X-Frame-Options: DENY</p>
-            <button>Transfer $1000</button>
-        </body>
-        </html>
-    `;
-    
-    protectedContent.srcdoc = protectedHTML;
+    // Try to load a real protected page (this will fail due to frame protection)
+    // Using a well-known site that has frame protection
+    protectedContent.src = 'https://www.google.com';
     
     let resultHTML = `<strong>Frame Protection Test:</strong><br>`;
-    resultHTML += `This simulates a page with proper frame protection headers.<br>`;
+    resultHTML += `Attempting to load a page with X-Frame-Options: SAMEORIGIN<br>`;
     resultHTML += `<span style="color: green; font-weight: bold;">✅ CLICKJACKING PREVENTED!</span><br>`;
-    resultHTML += `Real browsers would refuse to load this page in a frame.<br><br>`;
+    resultHTML += `The iframe below should be empty or show an error because cross-origin framing is blocked.<br><br>`;
     
     resultDiv.innerHTML = resultHTML;
     resultDiv.appendChild(protectedContent);
     resultDiv.className = 'result success';
+    
+    // Add event listeners to show what actually happens
+    protectedContent.onload = function() {
+        console.log('Iframe loaded successfully (unexpected if frame protection is working)');
+    };
+    
+    protectedContent.onerror = function() {
+        console.log('Iframe failed to load (expected with frame protection)');
+    };
 }
 
 // ========================================
 // DOM CLOBBERING DEMONSTRATIONS
 // ========================================
+
+function log() {
+    console.log('kliksz');
+}
 
 // Vulnerable function that uses global variables
 function processConfig() {

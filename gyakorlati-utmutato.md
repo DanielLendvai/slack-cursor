@@ -99,7 +99,7 @@ xdg-open index.html # Linux
 #### **1. Sebezhetős Oldal Tesztelése**
 ```bash
 # Nyisd meg külön ablakban
-http://localhost:3000/vulnerable-page.html
+http://127.0.0.1:5500/vulnerable-page.html
 ```
 
 #### **2. Fejlécek Ellenőrzése**
@@ -117,13 +117,13 @@ http://localhost:3000/vulnerable-page.html
 #### **4. Védett Oldal Tesztelése**
 ```bash
 # Nyisd meg
-http://localhost:3000/protected-page.html
+http://127.0.0.1:5500/protected-page.html
 ```
 
 ### **Védelmi Fejlécek Ellenőrzése**
 ```bash
 # curl paranccsal
-curl -I http://localhost:3000/protected-page.html
+curl -I http://127.0.0.1:5500/protected-page.html
 
 # Várható válasz:
 X-Frame-Options: DENY
@@ -133,10 +133,10 @@ Content-Security-Policy: frame-ancestors 'none'
 ### **Valós Tesztelés Böngészőben**
 ```html
 <!-- Próbáld ki ezt egy külön HTML fájlban -->
-<iframe src="http://localhost:3000/vulnerable-page.html"></iframe>
+<iframe src="http://127.0.0.1:5500/vulnerable-page.html"></iframe>
 <!-- Ez működni fog -->
 
-<iframe src="http://localhost:3000/protected-page.html"></iframe>
+<iframe src="http://127.0.0.1:5500/protected-page.html"></iframe>
 <!-- Ez blokkolva lesz -->
 ```
 

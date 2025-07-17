@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>Security Vulnerability Demonstrations - Kisiskolai tananyag</h1>
+            <h1>Security Vulnerability Demonstrations</h1>
             <p class="subtitle">Educational examples of Prototype Pollution, Clickjacking, and DOM Clobbering</p>
         </header>
 
@@ -20,6 +20,9 @@
         </nav>
 
         <main>
+
+
+
             <!-- Prototype Pollution Section -->
             <section id="prototype-pollution" class="vulnerability-section active">
                 <h2>Prototype Pollution</h2>
@@ -86,7 +89,7 @@
                                 <h4>Fake Social Media Post</h4>
                                 <p>Click the "Like" button below!</p>
                                 <div class="button-container">
-                                    <button class="fake-button">Like This Post</button>
+                                    <button onclick="log()" class="fake-button">Like This Post</button>
                                     <iframe src="vulnerable-page.html" class="hidden-iframe"></iframe>
                                 </div>
                             </div>
