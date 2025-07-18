@@ -1,7 +1,7 @@
 /* ===================================================================
    SECURE INPUT COMPONENT - SHADOW DOM IMPLEMENTATION
    
-   PRESENTER: This component demonstrates TRUE encapsulation using
+   This component demonstrates TRUE encapsulation using
    Shadow DOM. Notice how:
    
    1. Internal DOM structure is hidden from parent page
@@ -14,19 +14,19 @@
 export class SecureInput extends HTMLElement {
     constructor() {
         super();
-        // PRESENTER: This is the KEY difference - creating a Shadow DOM
+        // This is the KEY difference - creating a Shadow DOM
         // 'closed' mode prevents external access to shadowRoot
         this.shadowRootRef = this.attachShadow({ mode: 'closed' });
         this.setupShadowDOM();
         this.attachEventListeners();
     }
     setupShadowDOM() {
-        // PRESENTER: Everything created here is encapsulated within Shadow DOM
+        // Everything created here is encapsulated within Shadow DOM
         // External scripts cannot access these elements
         // Create the component HTML structure
         this.shadowRootRef.innerHTML = `
             <style>
-                /* PRESENTER: These styles are COMPLETELY ISOLATED */
+                /* These styles are COMPLETELY ISOLATED */
                 /* Global CSS cannot override these styles */
                 :host {
                     display: block;
@@ -128,7 +128,7 @@ export class SecureInput extends HTMLElement {
                     font-weight: 500;
                 }
                 
-                /* PRESENTER: These styles cannot be overridden from outside */
+                /* These styles cannot be overridden from outside */
                 /* Try this in global CSS - it won't work! */
                 /* secure-input input { background: red !important; } */
             </style>
@@ -150,33 +150,33 @@ export class SecureInput extends HTMLElement {
                 </div>
             </div>
         `;
-        // PRESENTER: Get references to Shadow DOM elements
+        // Get references to Shadow DOM elements
         // These are completely hidden from external access
         this.label = this.shadowRootRef.querySelector('.secure-input-label');
         this.input = this.shadowRootRef.querySelector('.secure-input-field');
         this.button = this.shadowRootRef.querySelector('.secure-input-button');
     }
     attachEventListeners() {
-        // PRESENTER: These event listeners are attached to Shadow DOM elements
+        // These event listeners are attached to Shadow DOM elements
         // External scripts cannot interfere with these events
         this.button.addEventListener('click', () => {
             this.handleSecureSubmit();
         });
-        // PRESENTER: Even though events bubble up, the internal structure is protected
+        // Even though events bubble up, the internal structure is protected
         this.input.addEventListener('input', (event) => {
             // Dispatch a custom event to the host element
             // This allows controlled communication with the parent
             this.dispatchEvent(new CustomEvent('secure-input-change', {
                 detail: {
                     hasValue: this.input.value.length > 0,
-                    // PRESENTER: Notice we don't expose the actual value
+                    // Notice we don't expose the actual value
                     // Only metadata about the value
                     length: this.input.value.length
                 },
                 bubbles: true
             }));
         });
-        // PRESENTER: Add some visual feedback that's completely protected
+        // Add some visual feedback that's completely protected
         this.input.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 this.handleSecureSubmit();
@@ -189,7 +189,7 @@ export class SecureInput extends HTMLElement {
             this.showSecureAlert('Please enter some text in the Shadow DOM input!');
             return;
         }
-        // PRESENTER: This log is the only way to see the value
+        // This log is the only way to see the value
         // The input itself cannot be accessed from outside
         console.log('🔒 Shadow DOM Input Submitted:', value);
         this.showSecureAlert(`Shadow DOM Value: "${value}"\n\n` +
@@ -205,15 +205,15 @@ export class SecureInput extends HTMLElement {
         }));
     }
     showSecureAlert(message) {
-        // PRESENTER: Even our alert method is encapsulated
+        // Even our alert method is encapsulated
         alert(message);
     }
-    // PRESENTER: Limited public API - only controlled access
+    // Limited public API - only controlled access
     hasValue() {
         return this.input.value.length > 0;
     }
     getValueLength() {
-        // PRESENTER: We expose metadata but not the actual value
+        // We expose metadata but not the actual value
         return this.input.value.length;
     }
     focus() {
@@ -222,16 +222,16 @@ export class SecureInput extends HTMLElement {
     clear() {
         this.input.value = '';
     }
-    // PRESENTER: We deliberately DO NOT expose getValue() or setValue()
+    // We deliberately DO NOT expose getValue() or setValue()
     // This maintains the security boundary
-    // PRESENTER: Lifecycle methods
+    // Lifecycle methods
     connectedCallback() {
         console.log('🔒 Secure Input connected to DOM - Shadow DOM protected');
     }
     disconnectedCallback() {
         console.log('🔒 Secure Input disconnected from DOM');
     }
-    // PRESENTER: Attribute observation with controlled updates
+    // Attribute observation with controlled updates
     static get observedAttributes() {
         return ['label'];
     }

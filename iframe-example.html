@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IFrame Security Example</title>
     <style>
-        /* PRESENTER: These styles are COMPLETELY ISOLATED from the parent page
+        /* These styles are COMPLETELY ISOLATED from the parent page
            Unlike Shadow DOM, iframe provides a complete security boundary */
         
         body {
@@ -81,12 +81,12 @@
             font-weight: 500;
         }
         
-        /* PRESENTER: Even if the parent page has conflicting styles,
+        /* Even if the parent page has conflicting styles,
            this iframe is completely protected */
     </style>
 </head>
 <body>
-    <!-- PRESENTER: This entire document is isolated from the parent page
+    <!-- This entire document is isolated from the parent page
          It has its own window, document, and JavaScript context -->
     
     <div class="iframe-container">
@@ -111,7 +111,7 @@
     </div>
 
     <script>
-        /* PRESENTER: This JavaScript runs in a completely separate context
+        /* This JavaScript runs in a completely separate context
            from the parent page. Even malicious scripts in the parent cannot
            access this code or the DOM elements here. */
         
@@ -124,7 +124,7 @@
                 return;
             }
             
-            // PRESENTER: This console.log goes to the iframe's console context
+            // This console.log goes to the iframe's console context
             // It's completely separate from the parent page's console
             console.log('🏰 IFrame Input Submitted:', value);
             
@@ -141,11 +141,16 @@
             
             input.value = '';
             
-            // PRESENTER: We could postMessage to communicate with parent
+            // We could postMessage to communicate with parent
             // but only if we explicitly choose to do so
+            // window.parent = the page that contains the iframe
+            // postMessage() = sends a message to the parent
+            // '*' = allows any origin to receive (you can restrict this)
+
             try {
                 window.parent.postMessage({
                     type: 'iframe-submit',
+                    allowModals: true,
                     data: { submitted: true, timestamp: Date.now() }
                 }, '*');
             } catch (error) {
@@ -153,27 +158,27 @@
             }
         }
         
-        // PRESENTER: Add some interactive behavior that's completely protected
+        // Add some interactive behavior that's completely protected
         document.getElementById('iframe-input').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 handleIframeSubmit();
             }
         });
         
-        // PRESENTER: This event listener is completely isolated
+        // This event listener is completely isolated
         document.getElementById('iframe-input').addEventListener('input', function(event) {
             // This cannot be intercepted by the parent page
-            // console.log('🏰 Isolated input event:', event.target.value);
+             console.log('🏰 Isolated input event:', event.target.value);
         });
         
-        // PRESENTER: Demonstrate complete isolation on load
+        // Demonstrate complete isolation on load
         console.log('🏰 IFrame JavaScript context loaded - completely isolated');
         console.log('🏰 Parent cannot access this console or any variables here');
         
-        // PRESENTER: Even global variables are isolated
+        // Even global variables are isolated
         window.iframeSecret = 'This cannot be accessed from parent page';
         
-        /* PRESENTER: Security comparison for demonstration:
+        /* Security comparison for demonstration:
         
            IFRAME ISOLATION:
            ✅ DOM completely isolated

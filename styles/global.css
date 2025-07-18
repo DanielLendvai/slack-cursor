@@ -1,7 +1,7 @@
 /* ===================================================================
    GLOBAL STYLES FOR SHADOW DOM SECURITY SHOWCASE
    
-   PRESENTER: These styles demonstrate how global CSS affects different
+   These styles demonstrate how global CSS affects different
    encapsulation methods differently:
    - Light DOM: Fully affected by these styles
    - Shadow DOM: Protected from these styles
@@ -143,7 +143,7 @@ header p {
 
 /* ===================================================================
    IFRAME STYLING
-   PRESENTER: Note how iframe gets its own styling context
+   Note how iframe gets its own styling context
    =================================================================== */
 
 iframe {
@@ -156,7 +156,7 @@ iframe {
 
 /* ===================================================================
    ATTACK PLAYGROUND SECTION
-   PRESENTER: This section allows live security testing
+   This section allows live security testing
    =================================================================== */
 
 .attack-playground {
@@ -374,18 +374,18 @@ iframe {
 
 /* This will affect Light DOM but NOT Shadow DOM */
 normal-input input {
-    /* PRESENTER: This style will successfully override Light DOM input */
+    /* This style will successfully override Light DOM input */
     transition: all 0.3s ease;
 }
 
 normal-input input:focus {
-    /* PRESENTER: Light DOM is vulnerable to global style injection */
+    /* Light DOM is vulnerable to global style injection */
     box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.2);
 }
 
 /* This will NOT affect Shadow DOM - demonstrate the protection */
 secure-input input {
-    /* PRESENTER: This will have NO EFFECT on Shadow DOM component */
+    /* This will have NO EFFECT on Shadow DOM component */
     background: yellow !important;
     border: 5px solid red !important;
 }

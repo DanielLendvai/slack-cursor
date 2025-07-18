@@ -1,7 +1,7 @@
 /* ===================================================================
    MAIN APPLICATION - SECURITY SHOWCASE COORDINATOR
    
-   PRESENTER: This file coordinates the entire security demonstration.
+   This file coordinates the entire security demonstration.
    It provides:
    1. Component initialization
    2. Attack playground functionality
@@ -15,7 +15,7 @@ class SecurityShowcaseApp {
         this.initializeApp();
     }
     initializeApp() {
-        // PRESENTER: Wait for DOM to be ready
+        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 this.setupApplication();
@@ -27,21 +27,21 @@ class SecurityShowcaseApp {
     }
     setupApplication() {
         console.log('🚀 Security Showcase App initializing...');
-        // PRESENTER: Get references to UI elements
+        // Get references to UI elements
         this.getUIReferences();
-        // PRESENTER: Set up event listeners for the attack playground
+        // Set up event listeners for the attack playground
         this.setupAttackPlayground();
-        // PRESENTER: Set up pre-built attack examples
+        // Set up pre-built attack examples
         this.setupAttackExamples();
-        // PRESENTER: Listen for component events
-        this.setupComponentListeners();
-        // PRESENTER: Add iframe message listener
-        this.setupIFrameListener();
+        // Listen for component events
+        /* this.setupComponentListeners(); */
+        // Add iframe message listener
+        /* this.setupIFrameListener(); */
         console.log('✅ Security Showcase App ready for demonstration!');
         this.displayWelcomeMessage();
     }
     getUIReferences() {
-        // PRESENTER: Get references to attack playground elements
+        // Get references to attack playground elements
         this.attackCodeTextarea = document.getElementById('attack-code');
         this.runAttackButton = document.getElementById('run-attack');
         this.loadExampleButton = document.getElementById('load-example');
@@ -53,19 +53,19 @@ class SecurityShowcaseApp {
         }
     }
     setupAttackPlayground() {
-        // PRESENTER: Set up the main attack execution button
+        // Set up the main attack execution button
         this.runAttackButton.addEventListener('click', () => {
             this.executeAttack();
         });
-        // PRESENTER: Load example attacks button
+        // Load example attacks button
         this.loadExampleButton.addEventListener('click', () => {
             this.loadExampleAttacks();
         });
-        // PRESENTER: Clear results button
+        // Clear results button
         this.clearResultsButton.addEventListener('click', () => {
             this.clearResults();
         });
-        // PRESENTER: Allow Ctrl+Enter to run attacks quickly
+        // Allow Ctrl+Enter to run attacks quickly
         this.attackCodeTextarea.addEventListener('keydown', (event) => {
             if (event.ctrlKey && event.key === 'Enter') {
                 event.preventDefault();
@@ -74,7 +74,7 @@ class SecurityShowcaseApp {
         });
     }
     setupAttackExamples() {
-        // PRESENTER: Set up pre-built attack example buttons
+        // Set up pre-built attack example buttons
         const exampleButtons = document.querySelectorAll('.example-btn');
         exampleButtons.forEach(button => {
             button.addEventListener('click', (event) => {
@@ -86,8 +86,8 @@ class SecurityShowcaseApp {
             });
         });
     }
-    setupComponentListeners() {
-        // PRESENTER: Listen to events from our components
+    /* setupComponentListeners() {
+        // Listen to events from our components
         const normalInput = document.getElementById('normal-input');
         const secureInput = document.getElementById('secure-input');
         if (normalInput) {
@@ -100,19 +100,19 @@ class SecurityShowcaseApp {
                 console.log('🔒 Secure Input Event (metadata only):', event.detail);
             });
             secureInput.addEventListener('secure-submit', (event) => {
-                console.log('🔒 Secure Submit Event:', event.detail);
+                console.log('🔒 Secure Submit Event:', event);
             });
         }
     }
     setupIFrameListener() {
-        // PRESENTER: Listen for messages from the iframe
+        // Listen for messages from the iframe
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'iframe-submit') {
                 console.log('🏰 IFrame Message Received:', event.data);
                 this.logResult('🏰 IFrame communicated via postMessage (controlled communication)');
             }
         });
-    }
+    } */
     executeAttack() {
         const code = this.attackCodeTextarea.value.trim();
         if (!code) {
@@ -121,7 +121,7 @@ class SecurityShowcaseApp {
         }
         this.logResult(`\n🎯 EXECUTING ATTACK:\n${code}\n`);
         try {
-            // PRESENTER: Execute the attack code and capture result
+            // Execute the attack code and capture result
             const result = eval(code);
             this.logResult(`✅ Attack executed successfully`);
             this.logResult(`📊 Result: ${JSON.stringify(result, null, 2)}`);
@@ -143,7 +143,7 @@ class SecurityShowcaseApp {
             this.logResult(`❌ Unknown attack type: ${attackType}`);
             return;
         }
-        // PRESENTER: Display results for each component
+        // Display results for each component
         results.forEach(result => {
             const status = result.success ? '✅ SUCCESS' : '❌ BLOCKED';
             this.logResult(`${status} - ${result.name}: ${result.description}`);
@@ -158,7 +158,7 @@ class SecurityShowcaseApp {
     }
     performValueAccessAttack() {
         const results = [];
-        // PRESENTER: Try to access Light DOM input
+        // Try to access Light DOM input
         try {
             const lightInput = document.querySelector('normal-input input');
             if (lightInput) {
@@ -187,7 +187,7 @@ class SecurityShowcaseApp {
                 description: 'Failed to access Light DOM input'
             });
         }
-        // PRESENTER: Try to access Shadow DOM input
+        // Try to access Shadow DOM input
         try {
             const shadowInput = document.querySelector('secure-input input');
             if (shadowInput) {
@@ -216,7 +216,7 @@ class SecurityShowcaseApp {
                 description: 'Shadow DOM input access blocked (PROTECTED)'
             });
         }
-        // PRESENTER: Try to access iframe content
+        // Try to access iframe content
         try {
             const iframe = document.getElementById('iframe-component');
             const iframeInput = iframe?.contentDocument?.getElementById('iframe-input');
@@ -251,7 +251,7 @@ class SecurityShowcaseApp {
     performStyleOverrideAttack() {
         const results = [];
         const timestamp = Date.now();
-        // PRESENTER: Try to style Light DOM input
+        // Try to style Light DOM input
         try {
             const style = document.createElement('style');
             style.id = `attack-style-${timestamp}`;
@@ -279,7 +279,7 @@ class SecurityShowcaseApp {
                 description: 'Failed to override Light DOM styles'
             });
         }
-        // PRESENTER: Try to style Shadow DOM input
+        // Try to style Shadow DOM input
         try {
             const style = document.createElement('style');
             style.id = `attack-shadow-style-${timestamp}`;
@@ -307,7 +307,7 @@ class SecurityShowcaseApp {
                 description: 'Shadow DOM style override blocked'
             });
         }
-        // PRESENTER: IFrame styles are completely isolated
+        // IFrame styles are completely isolated
         results.push({
             name: 'IFrame Style Override',
             success: false,
@@ -318,7 +318,7 @@ class SecurityShowcaseApp {
     }
     performEventHijackAttack() {
         const results = [];
-        // PRESENTER: Try to hijack Light DOM events
+        // Try to hijack Light DOM events
         try {
             const lightInput = document.querySelector('normal-input input');
             if (lightInput) {
@@ -343,7 +343,7 @@ class SecurityShowcaseApp {
                 description: 'Failed to hijack Light DOM events'
             });
         }
-        // PRESENTER: Try to hijack Shadow DOM events
+        // Try to hijack Shadow DOM events
         try {
             const shadowInput = document.querySelector('secure-input input');
             if (shadowInput) {
@@ -359,7 +359,7 @@ class SecurityShowcaseApp {
                 });
             }
             else {
-                // PRESENTER: This is the expected behavior
+                // This is the expected behavior
                 results.push({
                     name: 'Shadow DOM Event Hijacking',
                     success: false,
@@ -377,7 +377,7 @@ class SecurityShowcaseApp {
                 description: 'Shadow DOM event hijacking blocked (PROTECTED)'
             });
         }
-        // PRESENTER: IFrame events are completely isolated
+        // IFrame events are completely isolated
         results.push({
             name: 'IFrame Event Hijacking',
             success: false,
@@ -387,7 +387,7 @@ class SecurityShowcaseApp {
         return results;
     }
     loadExampleAttacks() {
-        // PRESENTER: Load comprehensive attack examples into the textarea
+        // Load comprehensive attack examples into the textarea
         const exampleCode = `// ===== COMPREHENSIVE ATTACK EXAMPLES =====
 
 // 1. VALUE ACCESS ATTACKS
@@ -460,7 +460,7 @@ console.log('\\n🎯 Attack sequence completed - check results above!');`;
         const logMessage = `[${timestamp}] ${message}`;
         this.resultsContent.textContent += logMessage + '\n';
         this.resultsContent.scrollTop = this.resultsContent.scrollHeight;
-        // PRESENTER: Also log to console for additional analysis
+        // Also log to console for additional analysis
         console.log(logMessage);
     }
     displayWelcomeMessage() {
@@ -544,7 +544,7 @@ PRESENTER TIPS:
    - Always follow defense-in-depth principles
    
    =================================================================== */
-// PRESENTER: Initialize the application when this module loads
+// Initialize the application when this module loads
 const app = new SecurityShowcaseApp();
 export {};
 //# sourceMappingURL=App.js.map
