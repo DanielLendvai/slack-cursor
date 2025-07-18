@@ -1,0 +1,39 @@
+name: Deploy Security Features to GitHub Pages
+
+on:
+  push:
+    branches: [ cursor/implement-new-security-features-5e9d ]
+  pull_request:
+    branches: [ cursor/implement-new-security-features-5e9d ]
+
+jobs:
+  deploy-security-features:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Create security-features directory structure
+        run: |
+          mkdir -p security-features
+          cp -r *.html *.js *.css *.md security-features/ 2>/dev/null || true
+          cp -r node_modules security-features/ 2>/dev/null || true
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'security-features'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 

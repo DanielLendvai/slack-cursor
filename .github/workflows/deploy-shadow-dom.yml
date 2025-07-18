@@ -1,0 +1,51 @@
+name: Deploy Shadow DOM Showcase to GitHub Pages
+
+on:
+  push:
+    branches: [ cursor/create-a-showcase-project-for-shadow-dom-2344 ]
+  pull_request:
+    branches: [ cursor/create-a-showcase-project-for-shadow-dom-2344 ]
+
+jobs:
+  deploy-shadow-dom:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build project
+        run: npm run build
+        
+      - name: Create shadow-dom directory structure
+        run: |
+          mkdir -p shadow-dom
+          cp -r dist/* shadow-dom/ 2>/dev/null || true
+          cp -r *.html shadow-dom/ 2>/dev/null || true
+          cp -r styles shadow-dom/ 2>/dev/null || true
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'shadow-dom'
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
