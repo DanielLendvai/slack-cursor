@@ -1,4 +1,4 @@
-name: Deploy multiple branches to GitHub Pages
+name: Deploy static branches to GitHub Pages
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - cursor/create-a-showcase-project-for-shadow-dom-2344
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,19 +27,11 @@ jobs:
             exit 1
           fi
 
-      - name: Install dependencies
-        run: |
-          npm ci
-
-      - name: Build project
-        run: |
-          npm run build  # change if needed (e.g., ng build, vite build)
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy static files to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist  # update this to your actual output folder!
           publish_branch: gh-pages
+          publish_dir: .  # root folder contains your static HTML/JS
           destination_dir: ${{ steps.vars.outputs.folder }}
           keep_files: true
