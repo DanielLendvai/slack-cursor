@@ -1,13 +1,13 @@
-name: Deploy to GitHub Pages
+name: Deploy Security Features to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [ cursor/implement-new-security-features-5e9d ]
   pull_request:
-    branches: [ main ]
+    branches: [ cursor/implement-new-security-features-5e9d ]
 
 jobs:
-  deploy:
+  deploy-security-features:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,21 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Create security-features directory structure
+        run: |
+          mkdir -p security-features
+          cp -r *.html *.js *.css *.md security-features/ 2>/dev/null || true
+          cp -r node_modules security-features/ 2>/dev/null || true
           
-      - name: Install dependencies
-        run: npm install
-        
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'security-features'
           
       - name: Deploy to GitHub Pages
         id: deployment
