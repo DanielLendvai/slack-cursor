@@ -1,0 +1,40 @@
+name: Deploy multi-branch to GitHub Pages
+
+on:
+  push:
+    branches:
+      - cursor/implement-new-security-features-5e9d
+      - cursor/create-a-showcase-project-for-shadow-dom-2344
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set branch and folder
+        id: vars
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "implement-new-security-features-5e9d" ]]; then
+            echo "folder=feature1" >> $GITHUB_OUTPUT
+          else
+            echo "folder=feature2" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build project (replace with your actual build step)
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
+          destination_dir: ${{ steps.vars.outputs.folder }}
+          keep_files: true
