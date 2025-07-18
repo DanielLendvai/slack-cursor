@@ -1,0 +1,39 @@
+name: Deploy static branches to GitHub Pages
+
+on:
+  push:
+    branches:
+      - cursor/implement-new-security-features-5e9d
+      - cursor/create-a-showcase-project-for-shadow-dom-2344
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Set folder info
+        id: vars
+        run: |
+          BRANCH_NAME="${GITHUB_REF##*/}"
+          if [[ "$BRANCH_NAME" == "implement-new-security-features-5e9d" ]]; then
+            echo "folder=feature1" >> $GITHUB_OUTPUT
+            echo "publish_dir=." >> $GITHUB_OUTPUT
+          elif [[ "$BRANCH_NAME" == "create-a-showcase-project-for-shadow-dom-2344" ]]; then
+            echo "folder=feature2" >> $GITHUB_OUTPUT
+            echo "publish_dir=dist" >> $GITHUB_OUTPUT
+          else
+            echo "Unknown branch: $BRANCH_NAME"
+            exit 1
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ${{ steps.vars.outputs.publish_dir }}
+          destination_dir: ${{ steps.vars.outputs.folder }}
+          keep_files: true
