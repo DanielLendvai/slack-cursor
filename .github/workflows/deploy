@@ -1,4 +1,4 @@
-name: Deploy multi-branch to GitHub Pages
+name: Deploy multiple branches to GitHub Pages
 
 on:
   push:
@@ -7,34 +7,39 @@ on:
       - cursor/create-a-showcase-project-for-shadow-dom-2344
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source branch
+      - name: Checkout branch
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Set branch and folder
+      - name: Set feature folder
         id: vars
         run: |
-          if [[ "${GITHUB_REF##*/}" == "implement-new-security-features-5e9d" ]]; then
+          BRANCH_NAME="${GITHUB_REF##*/}"
+          if [[ "$BRANCH_NAME" == "implement-new-security-features-5e9d" ]]; then
             echo "folder=feature1" >> $GITHUB_OUTPUT
-          else
+          elif [[ "$BRANCH_NAME" == "create-a-showcase-project-for-shadow-dom-2344" ]]; then
             echo "folder=feature2" >> $GITHUB_OUTPUT
+          else
+            echo "Unknown branch"
+            exit 1
           fi
 
-      - name: Build project (replace with your actual build step)
+      - name: Install dependencies
         run: |
-          npm install
-          npm run build
+          npm ci
+
+      - name: Build project
+        run: |
+          npm run build  # change if needed (e.g., ng build, vite build)
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  # update this to your actual output folder!
           publish_branch: gh-pages
-          publish_dir: ./dist
           destination_dir: ${{ steps.vars.outputs.folder }}
           keep_files: true
